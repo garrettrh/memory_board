@@ -1,39 +1,49 @@
 class MemoriesController < ApplicationController
   before_action :set_memory, only: [:show, :edit, :update, :destroy]
 
-  respond_to :html
-
   def index
     @memories = Memory.all
-    respond_with(@memories)
+    
   end
 
   def show
-    respond_with(@memory)
+    
   end
 
   def new
     @memory = Memory.new
-    respond_with(@memory)
-  end
-
-  def edit
+    
   end
 
   def create
     @memory = Memory.new(memory_params)
-    @memory.save
-    respond_with(@memory)
+
+    # saving the user when creating, two ways
+    # use this with default
+    @memory.user = current_user
+    # or the long way
+    # @memory = current_user.memories.new(memory_params)
+
+    if @memory.save
+      redirect_to memories_path
+    else
+      render :new
+    end
+
+  end
+
+  def edit
+
   end
 
   def update
     @memory.update(memory_params)
-    respond_with(@memory)
+    
   end
 
   def destroy
     @memory.destroy
-    respond_with(@memory)
+    
   end
 
   private
@@ -44,4 +54,6 @@ class MemoriesController < ApplicationController
     def memory_params
       params.require(:memory).permit(:title, :content)
     end
+  
+
 end
